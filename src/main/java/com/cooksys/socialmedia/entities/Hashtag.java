@@ -25,7 +25,7 @@ public class Hashtag {
 	@GeneratedValue
 	private Long id;
 
-	@Column
+	@Column(unique = true)
 	private String label;
 
 	@CreationTimestamp
@@ -35,6 +35,8 @@ public class Hashtag {
 	@UpdateTimestamp
 	@Column
 	private Timestamp lastUsed;
+	
+	private boolean deleted;
 
 	@ManyToMany
 	@JoinTable(name = "tweet_hashtags", joinColumns = @JoinColumn(name = "tweet_id"), inverseJoinColumns = @JoinColumn(name = "hashtag_id"))
