@@ -4,6 +4,7 @@ import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Embeddable
 @Data
@@ -15,6 +16,7 @@ public class Profile {
 	
 	private String lastName;
 	
+	@NonNull
 	private String email;
 	
 	private String phone;

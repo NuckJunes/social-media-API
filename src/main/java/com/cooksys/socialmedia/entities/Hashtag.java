@@ -25,15 +25,15 @@ public class Hashtag {
 	@GeneratedValue
 	private Long id;
 
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	private String label;
 
 	@CreationTimestamp
-	@Column
+	@Column(nullable = false)
 	private Timestamp firstUsed;
 
 	@UpdateTimestamp
-	@Column
+	@Column(nullable = false)
 	private Timestamp lastUsed;
 	
 	private boolean deleted;
