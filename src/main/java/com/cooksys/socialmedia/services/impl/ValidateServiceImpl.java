@@ -4,10 +4,10 @@ import org.springframework.stereotype.Service;
 
 import com.cooksys.socialmedia.services.ValidateService;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ValidateServiceImpl implements ValidateService {
 
 }
