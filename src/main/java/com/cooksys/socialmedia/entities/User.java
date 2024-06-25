@@ -59,6 +59,17 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "tweet_id")
     )
     private List<Tweet> likes;
+
+    @ManyToMany
+    @JoinTable(
+        name = "followers_following",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "follower_id")
+    )
+    private List<User> followers;
+
+    @ManyToMany(mappedBy = "followers")
+    private List<User> following;
     
     @PrePersist
     protected void onCreate() {

@@ -1,8 +1,8 @@
-package com.cooksys.services.impl;
+package com.cooksys.socialmedia.services.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.cooksys.services.UserService;
+import com.cooksys.socialmedia.services.UserService;
 
 import lombok.RequiredArgsConstructor;
 

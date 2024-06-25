@@ -1,4 +1,4 @@
-package com.cooksys.services;
+package com.cooksys.socialmedia.services;
 
 public interface UserService {
 
