@@ -1,5 +1,7 @@
 package com.cooksys.socialmedia.model;
 
+import com.cooksys.socialmedia.entities.Tweet;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
