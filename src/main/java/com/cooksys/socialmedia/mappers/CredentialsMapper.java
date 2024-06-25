@@ -2,7 +2,6 @@ package com.cooksys.socialmedia.mappers;
 
 import org.mapstruct.Mapper;
 
-import com.cooksys.quiz_api.mappers.AnswerMapper;
 import com.cooksys.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.entities.Credentials;
 

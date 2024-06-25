@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 
-import com.cooksys.quiz_api.mappers.AnswerMapper;
 import com.cooksys.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.entities.Tweet;
