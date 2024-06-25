@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TweetResponseDto {
-	private Long id;
+public class TweetRequestDto {
+	
 	private UserResponseDto userResponseDto;
 	private LocalDateTime posted;
 	private String content;
-	private TweetResponseDto inReplyTo;
-	private TweetResponseDto repostOf;
+//	private TweetResponseDto inReplyTo;
+//	private TweetResponseDto repostOf;
 }
