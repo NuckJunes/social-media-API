@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 import com.cooksys.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.entities.Credentials;
 
-@Mapper(componentModel = "spring", uses = { UserMapper.class })
+@Mapper(componentModel = "spring")
 public interface CredentialsMapper {
 	Credentials requestDtoToEntity (CredentialsDto credentialsDto);
 	
