@@ -1,19 +1,21 @@
 package com.cooksys.socialmedia.entities;
 
-import jakarta.persistence.Entity;
+import java.sql.Timestamp;
+import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -26,20 +28,18 @@ public class User {
     @Id
     @GeneratedValue
     private Long id;
-
-    @Column(unique = true, nullable = false)
-    private String username;
     
-    private String password;
-
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private LocalDateTime joined;
+    private Timestamp joined;
+    
+    @Embedded
+    private Profile profile;
+    
+    @Embedded
+    private Credentials credentials;
     
     private boolean deleted;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
 
     @OneToMany(mappedBy="author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tweet> tweets;
@@ -71,9 +71,9 @@ public class User {
     @ManyToMany(mappedBy = "followers")
     private List<User> following;
     
-    @PrePersist
-    protected void onCreate() {
-        this.joined = LocalDateTime.now();
-    }
+//    @PrePersist
+//    protected void onCreate() {
+//        this.joined = LocalDateTime.now();
+//    }
 
 }
