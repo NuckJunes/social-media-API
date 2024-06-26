@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cooksys.socialmedia.services.HashtagService;
+import com.cooksys.socialmedia.services.UserService;
 import com.cooksys.socialmedia.services.ValidateService;
 
 import lombok.AllArgsConstructor;
@@ -17,9 +18,15 @@ public class ValidateController {
 
 	private ValidateService validateService;
 	private final HashtagService hashtagService;
+	private final UserService userService;
 	
 	@GetMapping("/tag/exists/{label}")
 	public boolean tagExists(@PathVariable String label) {
 		return hashtagService.findIfTagExists(label);
+	}
+	
+	@GetMapping("/username/exists/@{username}")
+	public boolean userExists(@PathVariable String username) {
+		return userService.findIfUserExists(username);
 	}
 }

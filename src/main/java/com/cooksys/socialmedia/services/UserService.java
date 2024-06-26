@@ -12,5 +12,7 @@ public interface UserService {
 	UserResponseDto getUserByUsername(String username);
 
 	UserResponseDto createUser(UserRequestDto userRequestDto);
+	
+	Boolean findIfUserExists(String username);
 
 }

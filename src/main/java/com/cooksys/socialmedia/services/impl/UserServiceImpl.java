@@ -51,5 +51,10 @@ public class UserServiceImpl implements UserService {
 		return userMapper.entityToDto(userToCreate);
 	}
 
+	@Override
+	public Boolean findIfUserExists(String username) {
+		return userRepository.existsByCredentialsUsername(username);
+	}
+
     
 }
