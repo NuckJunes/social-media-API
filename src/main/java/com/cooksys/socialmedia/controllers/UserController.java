@@ -33,11 +33,11 @@ public class UserController {
         return userService.getAllUsers();
     };
 
-//    @GetMapping("/@{username}")
-//    public UserResponseDto getUserByUsername(@PathVariable String username) {
-//        return userService.getUserByUsername(username);
-//    }
-//
+    @GetMapping("/@{username}")
+    public UserResponseDto getUserByUsername(@PathVariable String username) {
+        return userService.getUserByUsername(username);
+    }
+
 //    @GetMapping("/@{username}/feed")
 //    public List<Tweet> getFeed(@PathVariable String username) {
 //        return userService.getFeed(username);

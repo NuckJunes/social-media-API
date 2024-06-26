@@ -23,5 +23,10 @@ public class UserServiceImpl implements UserService {
 		return userMapper.entitiesToDtos(userRepository.findAllByDeletedFalse());
 	}
 
+	@Override
+	public UserResponseDto getUserByUsername(String username) {
+		return userMapper.entityToDto(userRepository.findByCredentialsUsername(username));
+	}
+
     
 }
