@@ -8,7 +8,8 @@ import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.entities.User;
 
-@Mapper(componentModel = "spring", uses = { TweetMapper.class, ProfileMapper.class, CredentialsMapper.class })
+//removed tweet mapper
+@Mapper(componentModel = "spring", uses = { ProfileMapper.class, CredentialsMapper.class })
 public interface UserMapper {
 
     UserResponseDto entityToDto(User entity);

@@ -8,8 +8,8 @@ import com.cooksys.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.entities.Tweet;
 
-
-@Mapper(componentModel = "spring", uses = { HashtagMapper.class })
+//removed hashtag mapper
+@Mapper(componentModel = "spring", uses = { UserMapper.class})
 public interface TweetMapper {
 	
 	TweetResponseDto entityToDto(Tweet entity);

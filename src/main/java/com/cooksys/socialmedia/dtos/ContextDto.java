@@ -1,5 +1,7 @@
 package com.cooksys.socialmedia.dtos;
 
+import java.util.List;
+
 import com.cooksys.socialmedia.entities.Tweet;
 
 import lombok.Data;
@@ -14,8 +16,8 @@ public class ContextDto {
 	private Tweet target;
 	
 	@NonNull
-	private Tweet before;
+	private List<Tweet> before;
 	
 	@NonNull
-	private Tweet after;
+	private List<Tweet> after;
 }
