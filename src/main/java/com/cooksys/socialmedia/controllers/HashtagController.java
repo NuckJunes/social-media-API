@@ -32,4 +32,9 @@ public class HashtagController {
 		List<TweetResponseDto> fetchedTweets = tweetService.getTweetsFromHashtag(label);//Get tagged tweets from tweet service
 		return fetchedTweets;
 	}
+	
+	@GetMapping("/exists/{label}")
+	public boolean tagExists(@PathVariable String label) {
+		return hashtagService.findIfTagExists(label);
+	}
 }

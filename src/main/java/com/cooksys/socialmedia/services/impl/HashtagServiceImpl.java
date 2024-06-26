@@ -24,4 +24,10 @@ public class HashtagServiceImpl implements HashtagService{
 		return hashtagMapper.entitiesToDtos(hashtagRepository.findAll());
 	}
 
+	@Override
+	public Boolean findIfTagExists(String label) {
+//		label = "#" + label; //When using Seeded DB data, uncomment this line to append # to the label (seeded data is incorrect)
+		return hashtagRepository.existsByLabel(label); //Find if hashtag exists in db by label
+	}
+
 }

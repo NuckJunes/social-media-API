@@ -7,5 +7,7 @@ import com.cooksys.socialmedia.dtos.HashtagDto;
 public interface HashtagService {
 
 	List<HashtagDto> getAllHashTags();
+	
+	Boolean findIfTagExists(String label);
 
 }
