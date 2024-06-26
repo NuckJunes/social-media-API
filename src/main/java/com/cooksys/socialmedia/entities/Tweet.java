@@ -1,9 +1,10 @@
 package com.cooksys.socialmedia.entities;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,22 +30,34 @@ public class Tweet {
     
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
-    private User user;
+    private User author;
     
+	@CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private LocalDateTime posted;
-    
-    private boolean deleted;
+    private Timestamp posted;
+        
+    @Column
     private String content;
     
+    @ManyToMany(mappedBy = "likes")
+    private List<User> users_likes;
+    
+    @ManyToMany(mappedBy = "mentions")
+    private List<User> users_mentions;
     
     @ManyToOne
     @JoinColumn (name = "tweet_id")
     private Tweet inReplyTo;
     
-//  @OneToMany
-//  @JoinColumn (mappedBy="tweet_id", cascade = CascadeType.ALL, orphanRemoval = true)
-//  private List<Tweet> inReplyTo;
+    @OneToMany(mappedBy = "inReplyTo")
+    private List<Tweet> replies;
+    
+    @ManyToOne
+    @JoinColumn (name = "tweet_id")
+    private Tweet repostOf;
+    
+    @OneToMany(mappedBy = "repostOf")
+    private List<Tweet> reposts;
     
     @ManyToMany
     @JoinTable (
@@ -53,13 +66,7 @@ public class Tweet {
     		inverseJoinColumns = @JoinColumn(name = "hashtag_id")
     	)
     private List<Hashtag> hashtags;
-    
-//    @OneToMany
-//    @JoinColumn (mappedBy="tweet_id", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Tweet repostOf;
-    
-    @ManyToOne
-    @JoinColumn (name = "tweet_id")
-    private Tweet repostOf;
+
+    private boolean deleted;
 
 }
