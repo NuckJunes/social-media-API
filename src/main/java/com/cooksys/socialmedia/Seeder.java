@@ -136,7 +136,7 @@ public class Seeder implements CommandLineRunner {
         deletedUser.setProfile(deletedUserPro);
         // Deleted
         deletedUser.setDeleted(true);
-        //userRepository.saveAllAndFlush(Arrays.asList(user1, user2, user3, user4, user5, deletedUser));
+        userRepository.saveAllAndFlush(Arrays.asList(user1, user2, user3, user4, user5, deletedUser));
 
         // ----- HASHTAGS -----
 
@@ -152,7 +152,7 @@ public class Seeder implements CommandLineRunner {
         Hashtag hashtag4 = new Hashtag();
         hashtag4.setLabel("#whereiscortana");
 
-        //hashtagRepository.saveAllAndFlush(Arrays.asList(hashtag1, hashtag2, hashtag3, hashtag4));
+        hashtagRepository.saveAllAndFlush(Arrays.asList(hashtag1, hashtag2, hashtag3, hashtag4));
 
 //	    // ----- TWEETS -----
         // --- Start Tweet 1 ---
@@ -162,7 +162,7 @@ public class Seeder implements CommandLineRunner {
         tweet1.setContent("This is some content 1 tweet1 #eldenlord #mario");
         tweet1.setHashtags(Arrays.asList(hashtag1, hashtag2));
         tweet1.setUsers_mentions(Arrays.asList(user1, user2));
-        //tweetRepository.saveAndFlush(tweet1);
+        tweetRepository.saveAndFlush(tweet1);
 
         // --- Start Tweet 2 ---
         Tweet tweet2 = new Tweet();
@@ -171,7 +171,7 @@ public class Seeder implements CommandLineRunner {
         tweet2.setContent("This is some content 2 tweet2 #eldenlord #mario");
         tweet2.setHashtags(Arrays.asList(hashtag1, hashtag2));
         tweet2.setInReplyTo(tweet1);
-        //tweetRepository.saveAndFlush(tweet2);
+        tweetRepository.saveAndFlush(tweet2);
         
         // --- Start Tweet 3 ---
         Tweet tweet3 = new Tweet();
@@ -181,7 +181,7 @@ public class Seeder implements CommandLineRunner {
         tweet3.setContent("This is some content 3 tweet3 #luigi #whereiscortana");
         tweet3.setHashtags(Arrays.asList(hashtag3, hashtag4));
         tweet3.setInReplyTo(tweet2);
-        //tweetRepository.saveAndFlush(tweet3);
+        tweetRepository.saveAndFlush(tweet3);
 
         // --- Start Tweet 4 ---
         Tweet tweet4 = new Tweet();
@@ -190,7 +190,7 @@ public class Seeder implements CommandLineRunner {
         // Set Content @PARAM String
         tweet4.setContent("This is some content 4 tweet4");
         tweet4.setInReplyTo(tweet3);
-        //tweetRepository.saveAndFlush(tweet4);
+        tweetRepository.saveAndFlush(tweet4);
 
         // --- Start Tweet 5 ---
         Tweet tweet5 = new Tweet();
@@ -200,7 +200,7 @@ public class Seeder implements CommandLineRunner {
         tweet5.setContent("This is some content 5 tweet5");
         tweet5.setUsers_mentions(Arrays.asList(user1, user2));
         tweet5.setInReplyTo(tweet4);
-        //tweetRepository.saveAndFlush(tweet5);
+        tweetRepository.saveAndFlush(tweet5);
 
         // --- Start Tweet 6 ---
         Tweet tweet6 = new Tweet();
@@ -210,7 +210,7 @@ public class Seeder implements CommandLineRunner {
         tweet6.setRepostOf(tweet5);
         tweet6.setUsers_mentions(Arrays.asList(user1, user2));
         tweet6.setInReplyTo(tweet2);
-        //tweetRepository.saveAndFlush(tweet6);
+        tweetRepository.saveAndFlush(tweet6);
 
         // --- Start Tweet 7 ---
         Tweet deletedTweet = new Tweet();
@@ -219,20 +219,20 @@ public class Seeder implements CommandLineRunner {
         // Set Content @PARAM String
         deletedTweet.setContent("This is a deleted tweet (User3) tweet7");
         deletedTweet.setUsers_mentions(Arrays.asList(user1, user2));
-        //tweetRepository.saveAndFlush(deletedTweet);
+        tweetRepository.saveAndFlush(deletedTweet);
 
         // ----- LIST of Tweets + Adding to User# -----
         List<Tweet> user1Tweets = List.of(tweet1, tweet2);
         user1.setTweets(user1Tweets);
-        //userRepository.saveAndFlush(user1);
+        userRepository.saveAndFlush(user1);
 
         List<Tweet> user2Tweets = List.of(tweet3, tweet4);
         user2.setTweets(user2Tweets);
-        //userRepository.saveAndFlush(user2);
+        userRepository.saveAndFlush(user2);
 
         List<Tweet> user3Tweets = List.of(tweet5, tweet6);
         user3.setTweets(user3Tweets);
-        //userRepository.saveAndFlush(user3);
+        userRepository.saveAndFlush(user3);
 
         // ----- List of Liked Tweets -----
         user1.setLikes(user3Tweets);
