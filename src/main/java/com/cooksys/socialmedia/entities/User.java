@@ -41,7 +41,7 @@ public class User {
     
     private boolean deleted;
 
-    @OneToMany(mappedBy="author", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="author")
     private List<Tweet> tweets;
 
     @ManyToMany
