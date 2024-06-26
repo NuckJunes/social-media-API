@@ -63,12 +63,12 @@ public class UserController {
 //        return userService.getUserFollowing(username);
 //    }
 //
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto) {
-//        return userService.createUser(userRequestDto);
-//    }
-//
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto) {
+        return userService.createUser(userRequestDto);
+    }
+
 //    @PatchMapping("/@{username}")
 //    public UserResponseDto editUser(@RequestBody UserRequestDto userRequestDto, @PathVariable String username) {
 //        return userService.editUser(userRequestDto, username);
