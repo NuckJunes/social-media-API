@@ -33,8 +33,4 @@ public class HashtagController {
 		return fetchedTweets;
 	}
 	
-	@GetMapping("/exists/{label}")
-	public boolean tagExists(@PathVariable String label) {
-		return hashtagService.findIfTagExists(label);
-	}
 }
