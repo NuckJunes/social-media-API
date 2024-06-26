@@ -28,11 +28,11 @@ public class UserController {
     
     private final UserService userService;
 
-//    @GetMapping
-//    public List<UserResponseDto> getAllUsers() {
-//        return userService.getAllUsers();
-//    };
-//
+    @GetMapping
+    public List<UserResponseDto> getAllUsers() {
+        return userService.getAllUsers();
+    };
+
 //    @GetMapping("/@{username}")
 //    public UserResponseDto getUserByUsername(@PathVariable String username) {
 //        return userService.getUserByUsername(username);
