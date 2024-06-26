@@ -16,8 +16,8 @@ public class ContextDto {
 	private Tweet target;
 	
 	@NonNull
-	private List<Tweet> before;
+	private List<TweetResponseDto> before;
 	
 	@NonNull
-	private List<Tweet> after;
+	private List<TweetResponseDto> after;
 }

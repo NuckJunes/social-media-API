@@ -1,11 +1,11 @@
 package com.cooksys.socialmedia.dtos;
 
+import java.sql.Timestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
+import lombok.NonNull;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +19,6 @@ public class UserResponseDto {
     private ProfileDto profileDto;
     
     @NonNull
-    private LocalDateTime joined;
+    private Timestamp joined;
 
 }
