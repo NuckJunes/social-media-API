@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cooksys.socialmedia.dtos.CredentialsDto;
+import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.entities.Tweet;
@@ -38,56 +39,51 @@ public class UserController {
         return userService.getUserByUsername(username);
     }
 
-//    @GetMapping("/@{username}/feed")
-//    public List<Tweet> getFeed(@PathVariable String username) {
-//        return userService.getFeed(username);
-//    }
-//
-//    @GetMapping("/@{username}/tweets")
-//    public List<Tweet> getUserTweets(@PathVariable String username) {
-//        return userService.getUserTweets(username);
-//    }
-//
-//    @GetMapping("/@{username}/mentions")
-//    public List<Tweet> getUserMentions(@PathVariable String username) {
-//        return userService.getUserMentions(username);
-//    }
-//
-//    @GetMapping("/@{username}/followers")
-//    public List<User> getUserFollowers(@PathVariable String username) {
-//        return userService.getUserFollowers(username);
-//    } 
-//
-//    @GetMapping("/@{username}/following")
-//    public List<User> getUserFollowed(@PathVariable String username) {
-//        return userService.getUserFollowing(username);
-//    }
-//
+    @GetMapping("/@{username}/feed")
+    public List<TweetResponseDto> getFeed(@PathVariable String username) {
+        return userService.getFeed(username);
+    }
+
+    @GetMapping("/@{username}/tweets")
+    public List<TweetResponseDto> getUserTweets(@PathVariable String username) {
+        return userService.getUserTweets(username);
+    }
+
+    @GetMapping("/@{username}/mentions")
+    public List<TweetResponseDto> getUserMentions(@PathVariable String username) {
+        return userService.getUserMentions(username);
+    }
+
+    @GetMapping("/@{username}/followers")
+    public List<UserResponseDto> getUserFollowers(@PathVariable String username) {
+        return userService.getUserFollowers(username);
+    } 
+
+    @GetMapping("/@{username}/following")
+    public List<UserResponseDto> getUserFollowed(@PathVariable String username) {
+        return userService.getUserFollowing(username);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto) {
         return userService.createUser(userRequestDto);
     }
 
-//    @PatchMapping("/@{username}")
-//    public UserResponseDto editUser(@RequestBody UserRequestDto userRequestDto, @PathVariable String username) {
-//        return userService.editUser(userRequestDto, username);
-//    }
-//
-//    @DeleteMapping("/@{username}")
-//    public UserResponseDto deleteUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
-//        return userService.deleteUser(credentialsDto, username);
-//    }
-//
-//    @PostMapping("/@{username}/follow")
-//    public void followUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
-//        userService.followUser(credentialsDto, username);
-//    }
-//
-//    @PostMapping("/@{username}/unfollow")
-//    public void unfollowUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
-//        userService.unfollowUser(credentialsDto, username);
-//    }
+    @PatchMapping("/@{username}")
+    public UserResponseDto editUser(@RequestBody UserRequestDto userRequestDto, @PathVariable String username) {
+        return userService.editUser(userRequestDto, username);
+    }
+
+    @PostMapping("/@{username}/follow")
+    public void followUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
+        userService.followUser(credentialsDto, username);
+    }
+
+    @PostMapping("/@{username}/unfollow")
+    public void unfollowUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
+        userService.unfollowUser(credentialsDto, username);
+    }
     
     @DeleteMapping("/@{username}")
     public UserResponseDto deleteUser(@RequestBody CredentialsDto userCredentialsDto) {
