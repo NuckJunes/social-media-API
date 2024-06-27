@@ -2,6 +2,7 @@ package com.cooksys.socialmedia.services.impl;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -9,14 +10,17 @@ import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
 
+import com.cooksys.socialmedia.dtos.ContextDto;
 import com.cooksys.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
+import com.cooksys.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.entities.Hashtag;
 import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.entities.User;
 import com.cooksys.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.mappers.TweetMapper;
+import com.cooksys.socialmedia.mappers.UserMapper;
 import com.cooksys.socialmedia.repositories.HashtagRepository;
 import com.cooksys.socialmedia.repositories.TweetRepository;
 import com.cooksys.socialmedia.repositories.UserRepository;
@@ -33,6 +37,7 @@ public class TweetServiceImpl implements TweetService {
 	private final TweetRepository tweetRepository;
 	private final TweetMapper tweetMapper;
 	private final UserRepository userRepository;
+	private final UserMapper userMapper;
 	
 	private void validateTweetRequest(TweetRequestDto tweetRequestDto) {
 		if(tweetRequestDto == null || tweetRequestDto.getCredentials() == null) {
@@ -44,7 +49,7 @@ public class TweetServiceImpl implements TweetService {
 	// GET ALL METHOD
 	@Override
 	public List<TweetResponseDto> getAllTweets(){
-		return tweetMapper.entitiesToDto(tweetRepository.findAllByDeletedFalse());
+		return tweetMapper.entitiesToDtos(tweetRepository.findAllByDeletedFalse());
 	}
 	
 	// GET BY ID
@@ -113,6 +118,81 @@ public class TweetServiceImpl implements TweetService {
 
 	}
 	
+	// GET CONTEXT
+	public ContextDto getContext(Long id){
+		List<Tweet> before = new ArrayList<>();
+		List<Tweet> after = new ArrayList<>();
+		Tweet tweet = tweetRepository.getReferenceById(id);
+		
+		List<Tweet> afterUnfiltered  = tweet.getReplies();
+		Tweet currentTweet = tweet.getInReplyTo();
+		
+		while (currentTweet != null) {
+			before.add(currentTweet);
+			currentTweet = currentTweet.getInReplyTo();
+		}
+		
+		for (Tweet t: afterUnfiltered) {
+			if (!t.isDeleted()) {
+				after.add(t);
+			}
+		}
+		
+		ContextDto context = new ContextDto();
+		context.setTarget(tweet);
+		context.setBefore(tweetMapper.entitiesToDtos(before));
+		context.setAfter(tweetMapper.entitiesToDtos(after));
+		return context;
+	}
+	
+	// GET REPOST
+	public List<TweetResponseDto> getReposts(Long id){
+		Tweet tweet = tweetRepository.getReferenceById(id);
+		List<Tweet> res = new ArrayList<>();
+		for (Tweet t: tweet.getReposts()) {
+			if (!t.isDeleted()) {
+				res.add(t);
+			}
+		}
+//			if(res == null) {
+//				throw new NotFoundException("No users found");
+//			}
+		return tweetMapper.entitiesToDtos(res);
+	}
+
+	// GET REPLIES
+	public List<TweetResponseDto> getReplies(Long id){
+		Tweet tweet = tweetRepository.getReferenceById(id);
+		List<Tweet> res  = new ArrayList<>();
+		for (Tweet t: tweet.getReplies()) {
+			if (!t.isDeleted()) {
+				res.add(t);
+			}
+		}
+//			if(res == null) {
+//				throw new NotFoundException("No users found");
+//			}
+		
+		return tweetMapper.entitiesToDtos(res);
+	}
+	
+	// GET MENTIONS
+	
+	public List<UserResponseDto> getMentions(Long id){
+		Tweet tweet = tweetRepository.getReferenceById(id);
+		List<User> res = new ArrayList<>();
+		for (User u: tweet.getUsers_mentions()) {
+			if (!u.isDeleted()) {
+				res.add(u);
+			}
+		}
+//			if(res.isEmpty()) {
+//				throw new NotFoundException("No users found");
+//			}
+		
+		return userMapper.entitiesToDtos(res);
+	}
+	
 
 	@Override
 	public List<TweetResponseDto> getTweetsFromHashtag(String label) {
@@ -126,7 +206,7 @@ public class TweetServiceImpl implements TweetService {
 		}
 		//We have the hashtag_id. Now fetch tweets with findByHashtags_Id() from tweet repository
 		List<Tweet> taggedTweets = tweetRepository.findAllByHashtags_Id(fetchedHashtag.getId());
-		List<TweetResponseDto> taggedTweetDtos= tweetMapper.entitiesToDto(taggedTweets);
+		List<TweetResponseDto> taggedTweetDtos= tweetMapper.entitiesToDtos(taggedTweets);
 		//TODO: Sort the above list of tweet dtos by revers chronological order (newest first).
 		taggedTweetDtos.sort((o1, o2) -> o1.getPosted().compareTo(o2.getPosted()));; //May need getTime() to compare longs, if comparing Timestamp objects doesnt work.
 		return taggedTweetDtos;
