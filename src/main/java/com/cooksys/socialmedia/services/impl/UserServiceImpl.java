@@ -10,10 +10,12 @@ import com.cooksys.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
+import com.cooksys.socialmedia.entities.Credentials;
 import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.entities.User;
 import com.cooksys.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.exceptions.NotFoundException;
+import com.cooksys.socialmedia.mappers.CredentialsMapper;
 import com.cooksys.socialmedia.mappers.TweetMapper;
 import com.cooksys.socialmedia.mappers.UserMapper;
 import com.cooksys.socialmedia.repositories.TweetRepository;
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
 	private final UserMapper userMapper;
 	private final TweetRepository tweetRepository;
 	private final TweetMapper tweetMapper;
+	private final CredentialsMapper credentialsMapper;
 	
 	// Validate that the request has all the required fields
 	private void validateUserRequest(UserRequestDto userRequestDto) {
@@ -183,6 +186,31 @@ public class UserServiceImpl implements UserService {
 		checkUserExists(userFollowing);
 		List<User> following = userFollowing.getFollowing();
 		return userMapper.entitiesToDtos(following);
+	}
+
+	@Override
+	public void unfollowUser(CredentialsDto credentialsDto, String username) {
+		User userUnfollowing = userRepository.findByCredentialsUsername(username);
+		checkUserExists(userUnfollowing);
+		
+		Credentials credentials = credentialsMapper.requestDtoToEntity(credentialsDto);
+		User userToUnfollow = userRepository.findByCredentialsUsername(credentials.getUsername());
+		checkUserExists(userToUnfollow);
+		
+		List<User> following = userUnfollowing.getFollowing();
+		if(!following.contains(userToUnfollow)) {
+			throw new NotFoundException("" + username + " is not following " + userToUnfollow.getCredentials().getUsername());
+		}
+		following.remove(userToUnfollow);
+		userUnfollowing.setFollowing(following);
+		
+		List<User> followers = userToUnfollow.getFollowers();
+		followers.remove(userUnfollowing);
+		userToUnfollow.setFollowers(followers);
+		
+		userRepository.saveAndFlush(userUnfollowing);
+		userRepository.saveAndFlush(userToUnfollow);
+		
 	}
 
     

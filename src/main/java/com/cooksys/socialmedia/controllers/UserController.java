@@ -79,11 +79,11 @@ public class UserController {
 //    public void followUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
 //        userService.followUser(credentialsDto, username);
 //    }
-//
-//    @PostMapping("/@{username}/unfollow")
-//    public void unfollowUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
-//        userService.unfollowUser(credentialsDto, username);
-//    }
+
+    @PostMapping("/@{username}/unfollow")
+    public void unfollowUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
+        userService.unfollowUser(credentialsDto, username);
+    }
     
     @DeleteMapping("/@{username}")
     public UserResponseDto deleteUser(@RequestBody CredentialsDto userCredentialsDto) {
