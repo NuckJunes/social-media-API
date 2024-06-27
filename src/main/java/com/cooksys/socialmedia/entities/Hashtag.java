@@ -34,7 +34,7 @@ public class Hashtag {
 	@Column(nullable = false)
 	private Timestamp lastUsed;
 	
-	private boolean deleted;
+	private boolean deleted = false;
 
 	@ManyToMany(mappedBy = "hashtags")
 	private List<Tweet> tweets_hashtags;
