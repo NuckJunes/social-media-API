@@ -74,5 +74,17 @@ public class UserServiceImpl implements UserService {
 		return userMapper.entityToDto(userToDelete); //Return the soft deleted user
 	}
 
+	@Override
+	public UserResponseDto editUser(UserRequestDto userRequestDto, String username) {
+		User userToUpdate = userRepository.findByCredentialsUsername(username);
+		if(userToUpdate == null || userToUpdate.isDeleted()) {
+			throw new NotFoundException("No users with match username found.");
+		}
+		User newUser = userMapper.requestDtoToEntity(userRequestDto);
+		userToUpdate.setCredentials(newUser.getCredentials());
+		userToUpdate.setProfile(newUser.getProfile());
+		return userMapper.entityToDto(userRepository.saveAndFlush(userToUpdate));
+	}
+
     
 }

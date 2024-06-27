@@ -18,4 +18,6 @@ public interface UserService {
 	
 	UserResponseDto deleteUser(CredentialsDto userRequestDto);
 
+	UserResponseDto editUser(UserRequestDto userRequestDto, String username);
+
 }

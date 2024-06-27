@@ -69,11 +69,11 @@ public class UserController {
         return userService.createUser(userRequestDto);
     }
 
-//    @PatchMapping("/@{username}")
-//    public UserResponseDto editUser(@RequestBody UserRequestDto userRequestDto, @PathVariable String username) {
-//        return userService.editUser(userRequestDto, username);
-//    }
-//
+    @PatchMapping("/@{username}")
+    public UserResponseDto editUser(@RequestBody UserRequestDto userRequestDto, @PathVariable String username) {
+        return userService.editUser(userRequestDto, username);
+    }
+
 //    @DeleteMapping("/@{username}")
 //    public UserResponseDto deleteUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
 //        return userService.deleteUser(credentialsDto, username);
