@@ -256,6 +256,22 @@ public class TweetServiceImpl implements TweetService {
 		taggedTweetDtos.sort((o1, o2) -> o1.getPosted().compareTo(o2.getPosted()));; //May need getTime() to compare longs, if comparing Timestamp objects doesnt work.
 		return taggedTweetDtos;
 	}
+	// POST LIKE
+	public void createLike(Long tweetId, CredentialsDto credentialsDto) {
+		Tweet tweet = tweetRepository.getReferenceById(tweetId);
+		if (tweet.isDeleted()) {
+			throw new NotFoundException("No tweet found, id:" + tweetId);
+		}
+		User user = userRepository.findByCredentialsUsernameAndCredentialsPassword(credentialsDto.getUsername(), credentialsDto.getPassword());
+		if (user == null) {
+			throw new NotFoundException("No User Found with given credentials");
+		}
+		tweet.getUsers_likes().add(user);
+		user.getLikes().add(tweet);
+		tweetRepository.saveAndFlush(tweet);
+		userRepository.saveAndFlush(user);
+		
+	}
 
 
 	@Override

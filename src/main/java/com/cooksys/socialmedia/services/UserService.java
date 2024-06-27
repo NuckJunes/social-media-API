@@ -36,4 +36,6 @@ public interface UserService {
 
 	void followUser(CredentialsDto credentialsDto, String username);
 
+//	Boolean isUsernameAvailable(String username);
+
 }

@@ -36,4 +36,6 @@ public interface TweetService {
 
 	TweetResponseDto createRepostTweet(Long repostedTweetId, CredentialsDto reposterCredentials);
 
+	void createLike(Long tweetId, CredentialsDto credentialsDto);
+
 }

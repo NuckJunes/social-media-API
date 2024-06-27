@@ -52,6 +52,11 @@ public class TweetController {
 	}
 	
 	// POST    tweets/{id}/like
+	@PostMapping("/{tweetId}/like")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void createLike(@PathVariable Long tweetId, @RequestBody CredentialsDto credentialsDto) {
+		tweetService.createLike(tweetId, credentialsDto);
+	}
 	
 	@PostMapping("/{tweetId}/reply")
 	@ResponseStatus(HttpStatus.CREATED)
