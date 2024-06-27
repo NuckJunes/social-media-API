@@ -13,11 +13,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cooksys.socialmedia.dtos.ContextDto;
-<<<<<<< HEAD
 import com.cooksys.socialmedia.dtos.HashtagDto;
-=======
 import com.cooksys.socialmedia.dtos.CredentialsDto;
->>>>>>> 297be139feadd16961c208d5cc7f2ca3b62ea050
 import com.cooksys.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;

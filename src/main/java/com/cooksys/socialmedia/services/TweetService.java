@@ -34,7 +34,6 @@ public interface TweetService {
 
 	List<HashtagDto> getTags(Long id);
 
-
 	TweetResponseDto createRepostTweet(Long repostedTweetId, CredentialsDto reposterCredentials);
 
 }
