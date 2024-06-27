@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cooksys.socialmedia.dtos.CredentialsDto;
+import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
 import com.cooksys.socialmedia.entities.Tweet;
@@ -38,16 +39,16 @@ public class UserController {
         return userService.getUserByUsername(username);
     }
 
-//    @GetMapping("/@{username}/feed")
-//    public List<Tweet> getFeed(@PathVariable String username) {
-//        return userService.getFeed(username);
-//    }
-//
-//    @GetMapping("/@{username}/tweets")
-//    public List<Tweet> getUserTweets(@PathVariable String username) {
-//        return userService.getUserTweets(username);
-//    }
-//
+    @GetMapping("/@{username}/feed")
+    public List<TweetResponseDto> getFeed(@PathVariable String username) {
+        return userService.getFeed(username);
+    }
+
+    @GetMapping("/@{username}/tweets")
+    public List<TweetResponseDto> getUserTweets(@PathVariable String username) {
+        return userService.getUserTweets(username);
+    }
+
 //    @GetMapping("/@{username}/mentions")
 //    public List<Tweet> getUserMentions(@PathVariable String username) {
 //        return userService.getUserMentions(username);
