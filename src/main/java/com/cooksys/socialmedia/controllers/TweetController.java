@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cooksys.socialmedia.dtos.ContextDto;
+import com.cooksys.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
@@ -57,7 +58,11 @@ public class TweetController {
 		return tweetService.createReplyTweet(tweetRequestDto, tweetId);
 	}
 	
-	// POST    tweets/{id}/repost
+	@PostMapping("/{repostedTweetId}/repost")
+	@ResponseStatus(HttpStatus.CREATED)
+	public TweetResponseDto createRepostTweet(@PathVariable Long repostedTweetId, @RequestBody CredentialsDto reposterCredentials) {
+		return tweetService.createRepostTweet(repostedTweetId, reposterCredentials);
+	}
 	
 //  @GetMapping("/{id}/tags")
     
