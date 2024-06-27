@@ -1,6 +1,7 @@
 package com.cooksys.socialmedia.services.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.entities.Hashtag;
 import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.exceptions.BadRequestException;
+import com.cooksys.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.mappers.TweetMapper;
 import com.cooksys.socialmedia.repositories.HashtagRepository;
 import com.cooksys.socialmedia.repositories.TweetRepository;
@@ -33,12 +35,19 @@ public class TweetServiceImpl implements TweetService {
 	// GET ALL METHOD
 	@Override
 	public List<TweetResponseDto> getAllTweets(){
-		return tweetMapper.entitiesToDto(tweetRepository.findAll());
+		return tweetMapper.entitiesToDto(tweetRepository.findAllByDeletedFalse());
 	}
 	
 	// GET BY ID
 	@Override
 	public TweetResponseDto getTweetById(Long id) {
+		Tweet optionalTweet = tweetRepository.findById(id).get();
+		if (optionalTweet == null) {
+			throw new NotFoundException("No Tweet Found with the following ID: " + id);
+		}
+		if (optionalTweet.isDeleted()) {
+			throw new NotFoundException("Tweet No Longer Exist");
+		}
 		return tweetMapper.entityToDto(tweetRepository.getReferenceById(id));
 	}
 	
@@ -46,8 +55,22 @@ public class TweetServiceImpl implements TweetService {
 	public TweetResponseDto createTweet(TweetRequestDto tweetRequestDto) {
 		validateTweetRequest(tweetRequestDto);
 		Tweet tweetToCreate = tweetMapper.requestDtoToEntity(tweetRequestDto);
+		System.out.println(tweetToCreate);
+		
 		tweetRepository.saveAndFlush(tweetToCreate);
 		return tweetMapper.entityToDto(tweetToCreate);
+	}
+	
+	// DELETE
+	public TweetResponseDto deleteTweet(Long id) {
+		Tweet tweetToDelete = tweetRepository.getReferenceById(id);
+		if (tweetToDelete == null) {
+			throw new BadRequestException("No Tweet with Id:" + id);
+		}
+		tweetToDelete.setDeleted(true);
+		tweetRepository.saveAndFlush(tweetToDelete);
+		return tweetMapper.entityToDto(tweetToDelete);
+
 	}
 	
 

@@ -14,4 +14,6 @@ public interface TweetRepository extends JpaRepository<Tweet, Long>{
 	// will need to implement delete functions later
 	List<Tweet> findAllByHashtags_Id(Long hashtagid); //Derived query: Fetches tweets from the tweet_hashtag table, using a hashtag id.
 	
+	List<Tweet> findAllByDeletedFalse();
+	
 }
