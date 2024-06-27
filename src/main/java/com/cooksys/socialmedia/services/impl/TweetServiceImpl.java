@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 
 import com.cooksys.socialmedia.dtos.ContextDto;
+import com.cooksys.socialmedia.dtos.HashtagDto;
 import com.cooksys.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
@@ -19,6 +20,7 @@ import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.entities.User;
 import com.cooksys.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.exceptions.NotFoundException;
+import com.cooksys.socialmedia.mappers.HashtagMapper;
 import com.cooksys.socialmedia.mappers.TweetMapper;
 import com.cooksys.socialmedia.mappers.UserMapper;
 import com.cooksys.socialmedia.repositories.HashtagRepository;
@@ -38,6 +40,7 @@ public class TweetServiceImpl implements TweetService {
 	private final TweetMapper tweetMapper;
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
+	private final HashtagMapper hashtagMapper;
 	
 	private void validateTweetRequest(TweetRequestDto tweetRequestDto) {
 		if(tweetRequestDto == null || tweetRequestDto.getCredentials() == null) {
@@ -120,10 +123,12 @@ public class TweetServiceImpl implements TweetService {
 	
 	// GET CONTEXT
 	public ContextDto getContext(Long id){
-		List<Tweet> before = new ArrayList<>();
-		List<Tweet> after = new ArrayList<>();
 		Tweet tweet = tweetRepository.getReferenceById(id);
-		
+		if (tweet.isDeleted()) {
+			throw new NotFoundException("No tweet found, id:" + id);
+		}
+		List<Tweet> before = new ArrayList<>();
+		List<Tweet> after = new ArrayList<>();		
 		List<Tweet> afterUnfiltered  = tweet.getReplies();
 		Tweet currentTweet = tweet.getInReplyTo();
 		
@@ -148,6 +153,10 @@ public class TweetServiceImpl implements TweetService {
 	// GET REPOST
 	public List<TweetResponseDto> getReposts(Long id){
 		Tweet tweet = tweetRepository.getReferenceById(id);
+		if (tweet.isDeleted()) {
+			throw new NotFoundException("No tweet found, id:" + id);
+		}
+		
 		List<Tweet> res = new ArrayList<>();
 		for (Tweet t: tweet.getReposts()) {
 			if (!t.isDeleted()) {
@@ -163,6 +172,10 @@ public class TweetServiceImpl implements TweetService {
 	// GET REPLIES
 	public List<TweetResponseDto> getReplies(Long id){
 		Tweet tweet = tweetRepository.getReferenceById(id);
+		if (tweet.isDeleted()) {
+			throw new NotFoundException("No tweet found, id:" + id);
+		}
+		
 		List<Tweet> res  = new ArrayList<>();
 		for (Tweet t: tweet.getReplies()) {
 			if (!t.isDeleted()) {
@@ -191,6 +204,37 @@ public class TweetServiceImpl implements TweetService {
 //			}
 		
 		return userMapper.entitiesToDtos(res);
+	}
+	
+	// GET LIKES
+	public List<UserResponseDto> getLikes(Long id) {
+		Tweet tweet = tweetRepository.getReferenceById(id);
+		if (tweet.isDeleted()) {
+			throw new NotFoundException("No tweet found, id:" + id);
+		}
+		List<User> res = new ArrayList<>();
+		for (User u: tweet.getUsers_likes()) {
+			if (!u.isDeleted()) {
+				res.add(u);
+			}
+		}
+		return userMapper.entitiesToDtos(res);
+	}
+	 
+	// GET TAGS
+	
+	public List<HashtagDto> getTags(Long id) {
+		Tweet tweet = tweetRepository.getReferenceById(id);
+		if (tweet.isDeleted()) {
+			throw new NotFoundException("No tweet found, id:" + id);
+		}
+		List<Hashtag> res = new ArrayList<>();
+		for (Hashtag h: tweet.getHashtags()) {
+			if (!h.isDeleted()) {
+				res.add(h);
+			}
+		}
+		return hashtagMapper.entitiesToDtos(res);
 	}
 	
 
