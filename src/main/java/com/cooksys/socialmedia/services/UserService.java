@@ -34,4 +34,6 @@ public interface UserService {
 
 	void unfollowUser(CredentialsDto credentialsDto, String username);
 
+	void followUser(CredentialsDto credentialsDto, String username);
+
 }

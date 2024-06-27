@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
 		//quicksort all tweets
 		quickSort(feed, 0, feed.size()-1);
 		
-		return tweetMapper.entitiesToDto(feed);
+		return tweetMapper.entitiesToDtos(feed);
 	}
 
 	@Override
@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
 		checkUserExists(userTweets);
 		
 		List<Tweet> tweets = userTweets.getTweets();
-		return tweetMapper.entitiesToDto(tweets);
+		return tweetMapper.entitiesToDtos(tweets);
 	}
 
 	@Override
@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService {
 		checkUserExists(userMentions);
 		List<Tweet> mentions = userMentions.getMentions();
 		quickSort(mentions, 0, mentions.size()-1);
-		return tweetMapper.entitiesToDto(mentions);
+		return tweetMapper.entitiesToDtos(mentions);
 	}
 
 	@Override
@@ -211,6 +211,31 @@ public class UserServiceImpl implements UserService {
 		userRepository.saveAndFlush(userUnfollowing);
 		userRepository.saveAndFlush(userToUnfollow);
 		
+	}
+
+	@Override
+	public void followUser(CredentialsDto credentialsDto, String username) {
+		User userFollowing = userRepository.findByCredentialsUsername(username);
+		checkUserExists(userFollowing);
+		
+		Credentials credentials = credentialsMapper.requestDtoToEntity(credentialsDto);
+		User userToFollow = userRepository.findByCredentialsUsername(credentials.getUsername());
+		checkUserExists(userToFollow);
+		
+		List<User> following = userFollowing.getFollowing();
+		if(!following.contains(userToFollow)) {
+			following.add(userToFollow);
+		}
+		userFollowing.setFollowing(following);
+		
+		List<User> followed = userToFollow.getFollowers();
+		if(!followed.contains(userFollowing)) {
+			followed.add(userFollowing);
+		}
+		userToFollow.setFollowers(followed);
+		
+		userRepository.saveAndFlush(userFollowing);
+		userRepository.saveAndFlush(userToFollow);
 	}
 
     

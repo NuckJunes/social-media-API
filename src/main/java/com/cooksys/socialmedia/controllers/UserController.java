@@ -75,10 +75,10 @@ public class UserController {
         return userService.editUser(userRequestDto, username);
     }
 
-//    @PostMapping("/@{username}/follow")
-//    public void followUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
-//        userService.followUser(credentialsDto, username);
-//    }
+    @PostMapping("/@{username}/follow")
+    public void followUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
+        userService.followUser(credentialsDto, username);
+    }
 
     @PostMapping("/@{username}/unfollow")
     public void unfollowUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
