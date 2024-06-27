@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Table(name="user_details")
+@SQLRestriction("deleted = false") //Soft deleted entities are ignored
 public class User {
 
     @Id
@@ -39,7 +41,7 @@ public class User {
     @Embedded
     private Credentials credentials;
     
-    private boolean deleted;
+    private boolean deleted = false;
 
     @OneToMany(mappedBy="author")
     private List<Tweet> tweets;

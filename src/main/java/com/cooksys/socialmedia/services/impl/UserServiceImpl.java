@@ -5,12 +5,15 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.cooksys.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
+import com.cooksys.socialmedia.entities.Tweet;
 import com.cooksys.socialmedia.entities.User;
 import com.cooksys.socialmedia.exceptions.BadRequestException;
 import com.cooksys.socialmedia.exceptions.NotFoundException;
 import com.cooksys.socialmedia.mappers.UserMapper;
+import com.cooksys.socialmedia.repositories.TweetRepository;
 import com.cooksys.socialmedia.repositories.UserRepository;
 import com.cooksys.socialmedia.services.UserService;
 
@@ -22,6 +25,7 @@ public class UserServiceImpl implements UserService {
 	
 	private final UserRepository userRepository;
 	private final UserMapper userMapper;
+	private final TweetRepository tweetRepository;
 	
 	private void validateUserRequest(UserRequestDto userRequestDto) {
 		if(userRequestDto == null || userRequestDto.getCredentials() == null || userRequestDto.getProfile() == null) {
@@ -54,6 +58,20 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Boolean findIfUserExists(String username) {
 		return userRepository.existsByCredentialsUsername(username);
+	}
+
+	@Override
+	public UserResponseDto deleteUser(CredentialsDto userRequestDto) {
+		User userToDelete = userRepository.findByCredentialsUsernameAndCredentialsPassword(userRequestDto.getUsername(), userRequestDto.getPassword()); //IMPORTANT: mmay need to make CredentialsPassword
+		if (userToDelete == null) {
+			throw new BadRequestException("No user with matching username and password found.");
+		}
+		userToDelete.setDeleted(true); //Soft delete a user and any of their tweets
+		for (Tweet userTweet : userToDelete.getTweets()) {
+			userTweet.setDeleted(true);
+		}
+		userRepository.saveAndFlush(userToDelete);//This is creating a second user/password? Yes, because it is not PATCHING
+		return userMapper.entityToDto(userToDelete); //Return the soft deleted user
 	}
 
     

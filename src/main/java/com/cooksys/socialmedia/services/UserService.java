@@ -2,6 +2,7 @@ package com.cooksys.socialmedia.services;
 
 import java.util.List;
 
+import com.cooksys.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.dtos.UserRequestDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
 
@@ -14,5 +15,7 @@ public interface UserService {
 	UserResponseDto createUser(UserRequestDto userRequestDto);
 	
 	Boolean findIfUserExists(String username);
+	
+	UserResponseDto deleteUser(CredentialsDto userRequestDto);
 
 }

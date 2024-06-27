@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Table(name="tweet")
+@SQLRestriction("deleted = false") //Soft deleted entities are ignored
 public class Tweet {
 	
     @Id
@@ -67,6 +69,6 @@ public class Tweet {
     	)
     private List<Hashtag> hashtags;
 
-    private boolean deleted;
+    private boolean deleted = false;
 
 }

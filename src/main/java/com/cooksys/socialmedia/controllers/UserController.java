@@ -88,4 +88,10 @@ public class UserController {
 //    public void unfollowUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
 //        userService.unfollowUser(credentialsDto, username);
 //    }
+    
+    @DeleteMapping("/@{username}")
+    public UserResponseDto deleteUser(@RequestBody CredentialsDto userCredentialsDto) {
+    	UserResponseDto deletedUser = userService.deleteUser(userCredentialsDto);
+    	return deletedUser;
+    }
 }
