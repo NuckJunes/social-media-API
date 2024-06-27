@@ -160,5 +160,14 @@ public class UserServiceImpl implements UserService {
 		return tweetMapper.entitiesToDto(tweets);
 	}
 
+	@Override
+	public List<TweetResponseDto> getUserMentions(String username) {
+		User userMentions = userRepository.findByCredentialsUsername(username);
+		checkUserExists(userMentions);
+		List<Tweet> mentions = userMentions.getMentions();
+		quickSort(mentions, 0, mentions.size()-1);
+		return tweetMapper.entitiesToDto(mentions);
+	}
+
     
 }

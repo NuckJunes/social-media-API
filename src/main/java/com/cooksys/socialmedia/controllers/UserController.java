@@ -49,11 +49,11 @@ public class UserController {
         return userService.getUserTweets(username);
     }
 
-//    @GetMapping("/@{username}/mentions")
-//    public List<Tweet> getUserMentions(@PathVariable String username) {
-//        return userService.getUserMentions(username);
-//    }
-//
+    @GetMapping("/@{username}/mentions")
+    public List<TweetResponseDto> getUserMentions(@PathVariable String username) {
+        return userService.getUserMentions(username);
+    }
+
 //    @GetMapping("/@{username}/followers")
 //    public List<User> getUserFollowers(@PathVariable String username) {
 //        return userService.getUserFollowers(username);
@@ -75,11 +75,6 @@ public class UserController {
         return userService.editUser(userRequestDto, username);
     }
 
-//    @DeleteMapping("/@{username}")
-//    public UserResponseDto deleteUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
-//        return userService.deleteUser(credentialsDto, username);
-//    }
-//
 //    @PostMapping("/@{username}/follow")
 //    public void followUser(@RequestBody CredentialsDto credentialsDto, @PathVariable String username) {
 //        userService.followUser(credentialsDto, username);
