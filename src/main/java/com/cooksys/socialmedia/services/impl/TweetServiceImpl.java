@@ -211,4 +211,63 @@ public class TweetServiceImpl implements TweetService {
 		taggedTweetDtos.sort((o1, o2) -> o1.getPosted().compareTo(o2.getPosted()));; //May need getTime() to compare longs, if comparing Timestamp objects doesnt work.
 		return taggedTweetDtos;
 	}
+
+
+	@Override
+	public TweetResponseDto createReplyTweet(TweetRequestDto tweetRequestDto, Long replyTweetId) { //Reply tweet Dtos MUST have content and replyTo, but null repostOf
+		//1. Validate that tweet request is a valid object
+		validateTweetRequest(tweetRequestDto);
+		
+		//2. Ensure the tweet being replied to exists.
+		Tweet originalTweet = tweetRepository.findById(replyTweetId).get(); //No such element exception will be thrown if tweet does not exist
+		
+		//3. Validate that the user with given credentials exists
+		//Fetch user from database (and throw exception if there was no match)
+		User author = userRepository.findByCredentialsUsernameAndCredentialsPassword(tweetRequestDto.getCredentials().getUsername(), tweetRequestDto.getCredentials().getPassword());
+		if (author == null) {
+			throw new BadRequestException("No user could be found with matching credentials");
+		}
+		
+		//2: create a new tweet object with given DTO
+		Tweet replyTweet = tweetMapper.requestDtoToEntity(tweetRequestDto);
+		//3: Make sure tweet content is NOT empty
+		if (replyTweet.getContent() == null) {//If the reply tweet has empty content, throw error
+			throw new BadRequestException("Reply tweets must have content, cannot be empty.");
+		}
+		//4a: establish replyTo relationship here
+		replyTweet.setInReplyTo(originalTweet);
+		//4b: etsablish author of tweet
+		replyTweet.setAuthor(author);
+		
+		//5. Parse through content for hashtags and mentions
+		
+        //NOTE: If I had more time to refactor, I would put this block of code in a helper method in this service.
+		//Sort out tweet's mentions and hashtags
+        //Parse through content to fish out any @mentions
+        Matcher matcher = Pattern.compile("@\\w+").matcher(replyTweet.getContent());
+        while (matcher.find()) { //For every match we find for the given regex
+            if (userRepository.existsByCredentialsUsername(matcher.group().replace("@", ""))) { //Check if mentioned user exists in the DB
+                replyTweet.getUsers_mentions().add(userRepository.findByCredentialsUsername(matcher.group().replace("@", ""))); //If they do, set that here.
+            }
+        }
+
+        //Now fish out #hashtags
+        matcher = Pattern.compile("#\\w+").matcher(replyTweet.getContent());
+        while (matcher.find()) { //For every match we find for the given regex
+            String label = matcher.group().replace("#", ""); //Format label
+            Hashtag hashtag;
+            if (hashtagRepository.existsByLabel(label)) { //If given label is in our db (existing hashtag)
+                hashtag = hashtagRepository.findByLabel(label); //Fetch the matched hashtag via label
+                hashtag.setLastUsed(Timestamp.valueOf(LocalDateTime.now())); //update the haghtag's last used property
+            } else {
+                hashtag = hashtagService.createHashtag(label); //Create a new hashtag
+            } 
+            replyTweet.getHashtags().add(hashtag);//Add hashtag to our tweet's list of hashtags
+        }
+        
+        //Save fully developed tweet to DB (this should also save all nested entities, such as the hashtags and user mentions)
+  		tweetRepository.saveAndFlush(replyTweet);
+  		return tweetMapper.entityToDto(replyTweet);
+		
+	}
 }

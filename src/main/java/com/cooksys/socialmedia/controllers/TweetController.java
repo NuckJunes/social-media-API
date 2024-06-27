@@ -51,7 +51,11 @@ public class TweetController {
 	
 	// POST    tweets/{id}/like
 	
-	// POST    tweets/{id}/reply
+	@PostMapping("/{tweetId}/reply")
+	@ResponseStatus(HttpStatus.CREATED)
+	public TweetResponseDto createReplyTweet(@PathVariable Long tweetId, @RequestBody TweetRequestDto tweetRequestDto) {
+		return tweetService.createReplyTweet(tweetRequestDto, tweetId);
+	}
 	
 	// POST    tweets/{id}/repost
 	
