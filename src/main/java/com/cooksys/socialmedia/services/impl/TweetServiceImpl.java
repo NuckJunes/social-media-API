@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.cooksys.socialmedia.dtos.ContextDto;
 import com.cooksys.socialmedia.dtos.HashtagDto;
+import com.cooksys.socialmedia.dtos.CredentialsDto;
 import com.cooksys.socialmedia.dtos.TweetRequestDto;
 import com.cooksys.socialmedia.dtos.TweetResponseDto;
 import com.cooksys.socialmedia.dtos.UserResponseDto;
@@ -313,5 +314,25 @@ public class TweetServiceImpl implements TweetService {
   		tweetRepository.saveAndFlush(replyTweet);
   		return tweetMapper.entityToDto(replyTweet);
 		
+	}
+
+	@Override
+	public TweetResponseDto createRepostTweet(Long repostedTweetId, CredentialsDto reposterCredentials) {
+		//Fetch/validate user from database (and throw exception if there was no match)
+		User author = userRepository.findByCredentialsUsernameAndCredentialsPassword(reposterCredentials.getUsername(), reposterCredentials.getPassword());
+		if (author == null) {
+			throw new BadRequestException("No user could be found with matching credentials");
+		}		
+		
+		//2. Ensure the tweet being reposted exists.
+		Tweet originalTweet = tweetRepository.findById(repostedTweetId).get(); //NoSuchElementException will be thrown if tweet does not exist	
+		//THEN, create repostOf relationship, as well as author relationship (NO CONTENT copying)
+		Tweet repost = new Tweet();
+		repost.setAuthor(author);
+		repost.setRepostOf(originalTweet);
+		
+		// and save this new repost tweet into the db/return it 
+		tweetRepository.saveAndFlush(repost);
+		return tweetMapper.entityToDto(repost);
 	}
 }
