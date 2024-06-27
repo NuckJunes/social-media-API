@@ -28,4 +28,8 @@ public interface UserService {
 
 	List<TweetResponseDto> getUserMentions(String username);
 
+	List<UserResponseDto> getUserFollowers(String username);
+
+	List<UserResponseDto> getUserFollowing(String username);
+
 }

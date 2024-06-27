@@ -169,5 +169,21 @@ public class UserServiceImpl implements UserService {
 		return tweetMapper.entitiesToDto(mentions);
 	}
 
+	@Override
+	public List<UserResponseDto> getUserFollowers(String username) {
+		User userFollowers = userRepository.findByCredentialsUsername(username);
+		checkUserExists(userFollowers);
+		List<User> followers = userFollowers.getFollowers();
+		return userMapper.entitiesToDtos(followers);
+	}
+
+	@Override
+	public List<UserResponseDto> getUserFollowing(String username) {
+		User userFollowing = userRepository.findByCredentialsUsername(username);
+		checkUserExists(userFollowing);
+		List<User> following = userFollowing.getFollowing();
+		return userMapper.entitiesToDtos(following);
+	}
+
     
 }

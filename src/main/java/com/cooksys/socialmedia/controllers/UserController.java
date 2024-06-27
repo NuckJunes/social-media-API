@@ -54,16 +54,16 @@ public class UserController {
         return userService.getUserMentions(username);
     }
 
-//    @GetMapping("/@{username}/followers")
-//    public List<User> getUserFollowers(@PathVariable String username) {
-//        return userService.getUserFollowers(username);
-//    } 
-//
-//    @GetMapping("/@{username}/following")
-//    public List<User> getUserFollowed(@PathVariable String username) {
-//        return userService.getUserFollowing(username);
-//    }
-//
+    @GetMapping("/@{username}/followers")
+    public List<UserResponseDto> getUserFollowers(@PathVariable String username) {
+        return userService.getUserFollowers(username);
+    } 
+
+    @GetMapping("/@{username}/following")
+    public List<UserResponseDto> getUserFollowed(@PathVariable String username) {
+        return userService.getUserFollowing(username);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto) {
