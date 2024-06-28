@@ -1,5 +1,7 @@
 package com.cooksys.socialmedia.dtos;
 
+import com.cooksys.socialmedia.entities.Profile;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
@@ -14,5 +16,5 @@ public class UserRequestDto {
     private CredentialsDto credentials;
     
     @NonNull
-    private ProfileDto profile;
+    private Profile profile;
 }

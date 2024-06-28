@@ -14,7 +14,6 @@ import com.cooksys.socialmedia.entities.User;
 public interface UserMapper {
 
 	@Mapping(target="username", source="entity.credentials.username")
-    @Mapping(target="profileDto", source="entity.profile")
     UserResponseDto entityToDto(User entity);
     
     User requestDtoToEntity(UserRequestDto userRequestDto);

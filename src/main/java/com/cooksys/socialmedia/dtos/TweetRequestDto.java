@@ -1,5 +1,7 @@
 package com.cooksys.socialmedia.dtos;
 
+import com.cooksys.socialmedia.entities.Credentials;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,5 +13,5 @@ public class TweetRequestDto {
 	
 	private String content;
 	
-	private CredentialsDto credentials;
+	private Credentials credentials;
 }
