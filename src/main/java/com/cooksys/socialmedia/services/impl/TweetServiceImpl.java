@@ -91,16 +91,6 @@ public class TweetServiceImpl implements TweetService {
 		//Sort out tweet's mentions and hashtags
         //Parse through content to fish out any @mentions
         Matcher matcher = Pattern.compile("@\\w+").matcher(tweetToCreate.getContent());
-        while (matcher.find()) { //For every match we find for the given regex
-            if (userRepository.existsByCredentialsUsername(matcher.group().replace("@", ""))) { //Check if mentioned user exists in the DB
-                if (tweetToCreate.getUsers_mentions() == null) {
-                	tweetToCreate.setUsers_mentions(new ArrayList<>());
-                	tweetToCreate.getUsers_mentions().add(userRepository.findByCredentialsUsername(matcher.group().replace("@", ""))); //If they do, set that here.
-    			} else {
-                	tweetToCreate.getUsers_mentions().add(userRepository.findByCredentialsUsername(matcher.group().replace("@", ""))); //If they do, set that here.
-    			}
-            }
-        }
 
         //Now fish out #hashtags
         matcher = Pattern.compile("#\\w+").matcher(tweetToCreate.getContent());
@@ -124,6 +114,19 @@ public class TweetServiceImpl implements TweetService {
 		
 		//Save fully developed tweet to DB (this should also save all nested entities, such as the hashtags and user mentions)
 		tweetRepository.saveAndFlush(tweetToCreate);
+		
+        //Now that tweet has been saved to the database, sort out the mentions (they must be saved from the user side)
+		List<User> mentionedUsers = new ArrayList<>();
+        matcher = Pattern.compile("@\\w+").matcher(tweetToCreate.getContent());
+        while (matcher.find()) { //For every match we find for the given regex
+            if (userRepository.existsByCredentialsUsername(matcher.group().replace("@", ""))) { //Check if mentioned user exists in the DB
+            	//Reflect mention for each individual user mentioned (on the user side)
+            	User mentionedUser = userRepository.findByCredentialsUsername(matcher.group().replace("@", ""));
+            	mentionedUser.getMentions().add(tweetToCreate);
+            	mentionedUsers.add(mentionedUser);
+            }
+        }
+		userRepository.saveAllAndFlush(mentionedUsers);//Save all users mentioned to reflect mentions
 		return tweetMapper.entityToDto(tweetToCreate);
 	}
 	
@@ -209,7 +212,7 @@ public class TweetServiceImpl implements TweetService {
 	
 	// GET MENTIONS
 	
-	public List<UserResponseDto> getMentions(Long id){
+	public List<UserResponseDto> getMentions(Long id){  //TODO: GET MENTIONS
 		Tweet tweet = tweetRepository.getReferenceById(id);
 		List<User> res = new ArrayList<>();
 		for (User u: tweet.getUsers_mentions()) {
@@ -268,7 +271,6 @@ public class TweetServiceImpl implements TweetService {
 		//We have the hashtag_id. Now fetch tweets with findByHashtags_Id() from tweet repository
 		List<Tweet> taggedTweets = tweetRepository.findAllByHashtags_Id(fetchedHashtag.getId());
 		List<TweetResponseDto> taggedTweetDtos= tweetMapper.entitiesToDtos(taggedTweets);
-		//TODO: Sort the above list of tweet dtos by revers chronological order (newest first).
 		taggedTweetDtos.sort((o1, o2) -> o1.getPosted().compareTo(o2.getPosted()));; //May need getTime() to compare longs, if comparing Timestamp objects doesnt work.
 		return taggedTweetDtos;
 	}
