@@ -258,7 +258,6 @@ public class TweetServiceImpl implements TweetService {
 
 	@Override
 	public List<TweetResponseDto> getTweetsFromHashtag(String label) {
-		label = label.toLowerCase();//Case insensitive labels
 		
 		//label = "#" + label; //When using Seeded DB data, uncomment this line to append # to the label (seeded data is incorrect)
 		
