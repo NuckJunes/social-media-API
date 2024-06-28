@@ -128,8 +128,8 @@ public class TweetServiceImpl implements TweetService {
 	}
 	
 	// DELETE
-	public TweetResponseDto deleteTweet(Long id) {
-		Tweet tweetToDelete = tweetRepository.getReferenceById(id);
+	public TweetResponseDto deleteTweet(Long id) { //Issue: Issuing a delete for an id that does not exist throws an error.
+		Tweet tweetToDelete = tweetRepository.findById(id).orElseThrow(() -> new BadRequestException("No tweets with the given id could be found"));
 		if (tweetToDelete == null) {
 			throw new BadRequestException("No Tweet with Id:" + id);
 		}
