@@ -80,6 +80,12 @@ public class TweetServiceImpl implements TweetService {
 			throw new BadRequestException("No user could be found with matching credentials");
 		}
 		Tweet tweetToCreate = tweetMapper.requestDtoToEntity(tweetRequestDto);
+		
+		//Make sure tweet content is NOT empty
+		if (tweetToCreate.getContent() == null) {//If the reply tweet has empty content, throw error
+			throw new BadRequestException("Reply tweets must have content, cannot be empty.");
+		}
+		
 		tweetToCreate.setAuthor(author); //Set the tweets author correctly
 		
 		//Sort out tweet's mentions and hashtags
@@ -87,7 +93,12 @@ public class TweetServiceImpl implements TweetService {
         Matcher matcher = Pattern.compile("@\\w+").matcher(tweetToCreate.getContent());
         while (matcher.find()) { //For every match we find for the given regex
             if (userRepository.existsByCredentialsUsername(matcher.group().replace("@", ""))) { //Check if mentioned user exists in the DB
-                tweetToCreate.getUsers_mentions().add(userRepository.findByCredentialsUsername(matcher.group().replace("@", ""))); //If they do, set that here.
+                if (tweetToCreate.getUsers_mentions() == null) {
+                	tweetToCreate.setUsers_mentions(new ArrayList<>());
+                	tweetToCreate.getUsers_mentions().add(userRepository.findByCredentialsUsername(matcher.group().replace("@", ""))); //If they do, set that here.
+    			} else {
+                	tweetToCreate.getUsers_mentions().add(userRepository.findByCredentialsUsername(matcher.group().replace("@", ""))); //If they do, set that here.
+    			}
             }
         }
 
@@ -102,7 +113,13 @@ public class TweetServiceImpl implements TweetService {
             } else {
                 hashtag = hashtagService.createHashtag(label); //Create a new hashtag
             } 
-            tweetToCreate.getHashtags().add(hashtag);//Add hashtag to our tweet's list of hashtags
+            
+            if (tweetToCreate.getHashtags() == null) {
+            	tweetToCreate.setHashtags(new ArrayList<>());
+                tweetToCreate.getHashtags().add(hashtag);//Add hashtag to our tweet's list of hashtags
+			} else {
+	            tweetToCreate.getHashtags().add(hashtag);//Add hashtag to our tweet's list of hashtags
+			}
         }
 		
 		//Save fully developed tweet to DB (this should also save all nested entities, such as the hashtags and user mentions)

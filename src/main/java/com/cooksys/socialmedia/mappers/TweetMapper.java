@@ -13,7 +13,7 @@ import com.cooksys.socialmedia.entities.Tweet;
 @Mapper(componentModel = "spring", uses = { UserMapper.class})
 public interface TweetMapper {
 	
-	@Mapping(target="userResponseDto", source = "entity.author")
+	@Mapping(target="author", source = "entity.author") //WAS userResponseDto
 	TweetResponseDto entityToDto(Tweet entity);
 	
 	Tweet requestDtoToEntity(TweetRequestDto tweetRequestDto);

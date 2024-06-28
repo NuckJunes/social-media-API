@@ -16,7 +16,7 @@ public class TweetResponseDto {
 	private Long id;
 	
 	@NonNull
-	private UserResponseDto userResponseDto;
+	private UserResponseDto author;
 	
 	@NonNull
 	private Timestamp posted;
