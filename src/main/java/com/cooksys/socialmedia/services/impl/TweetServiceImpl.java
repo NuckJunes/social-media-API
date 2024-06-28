@@ -144,14 +144,14 @@ public class TweetServiceImpl implements TweetService {
 	
 	// GET CONTEXT
 	public ContextDto getContext(Long id){
-		Tweet tweet = tweetRepository.getReferenceById(id);
-		if (tweet.isDeleted()) {
+		Optional<Tweet> tweet = tweetRepository.findById(id);
+		if (tweet.isEmpty()) {
 			throw new NotFoundException("No tweet found, id:" + id);
 		}
 		List<Tweet> before = new ArrayList<>();
 		List<Tweet> after = new ArrayList<>();		
-		List<Tweet> afterUnfiltered  = tweet.getReplies();
-		Tweet currentTweet = tweet.getInReplyTo();
+		List<Tweet> afterUnfiltered  = tweet.get().getReplies();
+		Tweet currentTweet = tweet.get().getInReplyTo();
 		
 		while (currentTweet != null) {
 			before.add(currentTweet);
@@ -165,7 +165,7 @@ public class TweetServiceImpl implements TweetService {
 		}
 		
 		ContextDto context = new ContextDto();
-		context.setTarget(tweetMapper.entityToDto(tweet));
+		context.setTarget(tweetMapper.entityToDto(tweet.get()));
 		context.setBefore(tweetMapper.entitiesToDtos(before));
 		context.setAfter(tweetMapper.entitiesToDtos(after));
 		return context;
@@ -184,9 +184,7 @@ public class TweetServiceImpl implements TweetService {
 				res.add(t);
 			}
 		}
-//			if(res == null) {
-//				throw new NotFoundException("No users found");
-//			}
+
 		return tweetMapper.entitiesToDtos(res);
 	}
 
@@ -203,9 +201,6 @@ public class TweetServiceImpl implements TweetService {
 				res.add(t);
 			}
 		}
-//			if(res == null) {
-//				throw new NotFoundException("No users found");
-//			}
 		
 		return tweetMapper.entitiesToDtos(res);
 	}
@@ -220,9 +215,6 @@ public class TweetServiceImpl implements TweetService {
 				res.add(u);
 			}
 		}
-//			if(res.isEmpty()) {
-//				throw new NotFoundException("No users found");
-//			}
 		
 		return userMapper.entitiesToDtos(res);
 	}
