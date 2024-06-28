@@ -215,16 +215,16 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void unfollowUser(CredentialsDto credentialsDto, String username) {
-		User userUnfollowing = userRepository.findByCredentialsUsername(username);
-		checkUserExists(userUnfollowing);
+		User userToUnfollow = userRepository.findByCredentialsUsername(username);
+		checkUserExists(userToUnfollow);
 		
 		Credentials credentials = credentialsMapper.requestDtoToEntity(credentialsDto);
-		User userToUnfollow = userRepository.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword());
-		checkUserExists(userToUnfollow);
+		User userUnfollowing = userRepository.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword());
+		checkUserExists(userUnfollowing);
 		
 		List<User> following = userUnfollowing.getFollowing();
 		if(!following.contains(userToUnfollow)) {
-			throw new NotFoundException("" + username + " is not following " + userToUnfollow.getCredentials().getUsername());
+			throw new NotFoundException("" + userToUnfollow.getCredentials().getUsername() + " is not following " + username);
 		}
 		following.remove(userToUnfollow);
 		userUnfollowing.setFollowing(following);
@@ -240,23 +240,24 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void followUser(CredentialsDto credentialsDto, String username) {
-		User userFollowing = userRepository.findByCredentialsUsername(username);
-		checkUserExists(userFollowing);
+		// UserFollowing should be in the credentials
+		User userToFollow = userRepository.findByCredentialsUsername(username);
+		checkUserExists(userToFollow);
 		
 		Credentials credentials = credentialsMapper.requestDtoToEntity(credentialsDto);
-		User userToFollow = userRepository.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword());
-		checkUserExists(userToFollow);
+		User userFollowing = userRepository.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword());
+		checkUserExists(userFollowing);
 		
 		List<User> following = userFollowing.getFollowing();
 		if(following.contains(userToFollow)) {
-			throw new BadRequestException("" + username + " is already following " + credentials.getUsername());
+			throw new BadRequestException("" + credentials.getUsername() + " is already following " + username);
 		}
 		following.add(userToFollow);
 		userFollowing.setFollowing(following);
 		
 		List<User> followed = userToFollow.getFollowers();
 		if(followed.contains(userFollowing)) {
-			throw new BadRequestException("" + username + " already follows " + credentials.getUsername());
+			throw new BadRequestException("" + credentials.getUsername() + " already follows " + username);
 		}
 		followed.add(userFollowing);
 
