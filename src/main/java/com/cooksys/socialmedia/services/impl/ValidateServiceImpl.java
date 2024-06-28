@@ -18,14 +18,11 @@ public class ValidateServiceImpl implements ValidateService {
 	private final UserMapper userMapper;
 	
 	public Boolean isUsernameAvailable(String username) {
-		List<User> users = userRepository.findAll();
-		for(User u: users) {
-			if (u.getCredentials().getUsername() == username) {
-				return false;
-			}
-		}
+		User userQuery = userRepository.findByCredentialsUsername(username);
+		if (userQuery == null) {//If user could not be found
+			return true;//It means that username IS available, return true
+		} else return false;
 		
-		return true;
 	}
 
 }
