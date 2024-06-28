@@ -37,7 +37,14 @@ public class UserServiceImpl implements UserService {
 	// Validate that the request has all the required fields
 	private void validateUserRequest(UserRequestDto userRequestDto) {
 		if(userRequestDto == null || userRequestDto.getCredentials() == null || userRequestDto.getProfile() == null) {
-			throw new BadRequestException("Must have some credentials and profile");
+			throw new BadRequestException("Missing credentials or profile");
+		}
+		String username = userRequestDto.getCredentials().getUsername();
+		String password = userRequestDto.getCredentials().getPassword();
+		String email = userRequestDto.getProfile().getEmail();
+		
+		if(username == null || password == null || email == null) {
+			throw new BadRequestException("Missing either credentials or profile fields.");
 		}
 	}
 	
@@ -98,6 +105,10 @@ public class UserServiceImpl implements UserService {
 	public UserResponseDto createUser(UserRequestDto userRequestDto) {
 		validateUserRequest(userRequestDto);
 		User userToCreate = userMapper.requestDtoToEntity(userRequestDto);
+		User userExists = userRepository.findByCredentialsUsername(userToCreate.getCredentials().getUsername());
+		if(userExists != null) {
+			throw new BadRequestException("User already exists.");
+		}
 		userRepository.saveAndFlush(userToCreate);
 		return userMapper.entityToDto(userToCreate);
 	}
@@ -123,11 +134,25 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserResponseDto editUser(UserRequestDto userRequestDto, String username) {
+		if(userRequestDto == null || userRequestDto.getCredentials() == null || userRequestDto.getProfile() == null) {
+			throw new BadRequestException("Missing credentials or profile");
+		}
+		String name = userRequestDto.getCredentials().getUsername();
+		String password = userRequestDto.getCredentials().getPassword();
+		String email = userRequestDto.getProfile().getEmail();
+		
+		if(name == null || password == null) {
+			throw new BadRequestException("Missing either credentials or profile fields.");
+		}
+		
 		User userToUpdate = userRepository.findByCredentialsUsername(username);
 		checkUserExists(userToUpdate);
 		User newUser = userMapper.requestDtoToEntity(userRequestDto);
 		userToUpdate.setCredentials(newUser.getCredentials());
-		userToUpdate.setProfile(newUser.getProfile());
+		// Here we check to see if new profile has something
+		if(newUser.getProfile().getFirstName() != null) {
+			userToUpdate.setProfile(newUser.getProfile());
+		}
 		return userMapper.entityToDto(userRepository.saveAndFlush(userToUpdate));
 	}
 
@@ -194,7 +219,7 @@ public class UserServiceImpl implements UserService {
 		checkUserExists(userUnfollowing);
 		
 		Credentials credentials = credentialsMapper.requestDtoToEntity(credentialsDto);
-		User userToUnfollow = userRepository.findByCredentialsUsername(credentials.getUsername());
+		User userToUnfollow = userRepository.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword());
 		checkUserExists(userToUnfollow);
 		
 		List<User> following = userUnfollowing.getFollowing();
@@ -219,7 +244,7 @@ public class UserServiceImpl implements UserService {
 		checkUserExists(userFollowing);
 		
 		Credentials credentials = credentialsMapper.requestDtoToEntity(credentialsDto);
-		User userToFollow = userRepository.findByCredentialsUsername(credentials.getUsername());
+		User userToFollow = userRepository.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword());
 		checkUserExists(userToFollow);
 		
 		List<User> following = userFollowing.getFollowing();
