@@ -73,9 +73,4 @@ public class User {
     @ManyToMany(mappedBy = "followers")
     private List<User> following;
     
-//    @PrePersist
-//    protected void onCreate() {
-//        this.joined = LocalDateTime.now();
-//    }
-
 }

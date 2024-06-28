@@ -248,15 +248,18 @@ public class UserServiceImpl implements UserService {
 		checkUserExists(userToFollow);
 		
 		List<User> following = userFollowing.getFollowing();
-		if(!following.contains(userToFollow)) {
-			following.add(userToFollow);
+		if(following.contains(userToFollow)) {
+			throw new BadRequestException("" + username + " is already following " + credentials.getUsername());
 		}
+		following.add(userToFollow);
 		userFollowing.setFollowing(following);
 		
 		List<User> followed = userToFollow.getFollowers();
-		if(!followed.contains(userFollowing)) {
-			followed.add(userFollowing);
+		if(followed.contains(userFollowing)) {
+			throw new BadRequestException("" + username + " already follows " + credentials.getUsername());
 		}
+		followed.add(userFollowing);
+
 		userToFollow.setFollowers(followed);
 		
 		userRepository.saveAndFlush(userFollowing);
