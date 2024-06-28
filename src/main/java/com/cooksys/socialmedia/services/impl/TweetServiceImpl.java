@@ -165,7 +165,7 @@ public class TweetServiceImpl implements TweetService {
 		}
 		
 		ContextDto context = new ContextDto();
-		context.setTarget(tweet);
+		context.setTarget(tweetMapper.entityToDto(tweet));
 		context.setBefore(tweetMapper.entitiesToDtos(before));
 		context.setAfter(tweetMapper.entitiesToDtos(after));
 		return context;
@@ -299,7 +299,7 @@ public class TweetServiceImpl implements TweetService {
 		
 		//2. Ensure the tweet being replied to exists.
 		Tweet originalTweet = tweetRepository.findById(replyTweetId).get(); //No such element exception will be thrown if tweet does not exist
-		
+
 		//3. Validate that the user with given credentials exists
 		//Fetch user from database (and throw exception if there was no match)
 		User author = userRepository.findByCredentialsUsernameAndCredentialsPassword(tweetRequestDto.getCredentials().getUsername(), tweetRequestDto.getCredentials().getPassword());
@@ -315,6 +315,7 @@ public class TweetServiceImpl implements TweetService {
 		}
 		//4a: establish replyTo relationship here
 		replyTweet.setInReplyTo(originalTweet);
+
 		//4b: etsablish author of tweet
 		replyTweet.setAuthor(author);
 		

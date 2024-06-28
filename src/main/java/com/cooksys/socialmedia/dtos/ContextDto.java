@@ -13,7 +13,7 @@ import lombok.NonNull;
 public class ContextDto {
 
 	@NonNull
-	private Tweet target;
+	private TweetResponseDto target;
 	
 	@NonNull
 	private List<TweetResponseDto> before;
