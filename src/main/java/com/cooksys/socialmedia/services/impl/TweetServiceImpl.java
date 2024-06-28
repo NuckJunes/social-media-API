@@ -162,13 +162,49 @@ public class TweetServiceImpl implements TweetService {
 			if (!t.isDeleted()) {
 				after.add(t);
 			}
+			afterUnfiltered.addAll(t.getReplies());
 		}
+		
+		quickSort(before, 0, before.size()-1);
+		quickSort(after, 0, after.size()-1);
 		
 		ContextDto context = new ContextDto();
 		context.setTarget(tweetMapper.entityToDto(tweet.get()));
 		context.setBefore(tweetMapper.entitiesToDtos(before));
 		context.setAfter(tweetMapper.entitiesToDtos(after));
 		return context;
+	}
+	
+	//quicksort algorithm for sorting tweets by date
+	private void quickSort(List<Tweet> tweets, int begin, int end) {
+		if(begin < end) {
+			int partitionIndex = partition(tweets, begin, end);
+			
+			quickSort(tweets, begin, partitionIndex - 1);
+			quickSort(tweets, partitionIndex + 1, end);
+		}
+	}
+	
+	//quicksorts partition for sorting tweets by date
+	private int partition(List<Tweet> tweets, int begin, int end) {
+		Timestamp pivot = tweets.get(end).getPosted();
+		int i = (begin - 1);
+		
+		for(int j = begin; j < end; j++) {
+			if(tweets.get(j).getPosted().compareTo(pivot) <= 0) {
+				i++;
+				
+				Tweet swapTemp = tweets.get(i);
+				tweets.set(i, tweets.get(j));
+				tweets.set(j, swapTemp);
+			}
+		}
+		
+		Tweet swapTemp = tweets.get(i + 1);
+		tweets.set(i + 1, tweets.get(end));
+		tweets.set(end, swapTemp);
+		
+		return i + 1;
 	}
 	
 	// GET REPOST
