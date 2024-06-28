@@ -20,11 +20,11 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+//@SQLRestriction("deleted = false")
 @Entity
 @Data
 @NoArgsConstructor
 @Table(name="user_details")
-@SQLRestriction("deleted = false") //Soft deleted entities are ignored
 public class User {
 
     @Id

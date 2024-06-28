@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserResponseDto getUserByUsername(String username) {
 		User optionalUser = userRepository.findByCredentialsUsername(username);
-		if(optionalUser == null) {
+		if(optionalUser == null || optionalUser.isDeleted()){
 			throw new NotFoundException("No User with the username: " + username);
 		}
 		return userMapper.entityToDto(optionalUser);
@@ -106,16 +106,26 @@ public class UserServiceImpl implements UserService {
 		validateUserRequest(userRequestDto);
 		User userToCreate = userMapper.requestDtoToEntity(userRequestDto);
 		User userExists = userRepository.findByCredentialsUsername(userToCreate.getCredentials().getUsername());
-		if(userExists != null) {
+		if(userExists != null && !userExists.isDeleted()){
 			throw new BadRequestException("User already exists.");
 		}
-		userRepository.saveAndFlush(userToCreate);
-		return userMapper.entityToDto(userToCreate);
+		if(userExists != null && userExists.isDeleted()) {
+			userExists.setDeleted(false);
+			userRepository.saveAndFlush(userExists);
+			return userMapper.entityToDto(userExists);
+		} else {
+			userRepository.saveAndFlush(userToCreate);
+			return userMapper.entityToDto(userToCreate);
+		}
 	}
 
 	@Override
 	public Boolean findIfUserExists(String username) {
-		return userRepository.existsByCredentialsUsername(username);
+		User user = userRepository.findByCredentialsUsername(username);
+		if(user == null || user.isDeleted()) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
