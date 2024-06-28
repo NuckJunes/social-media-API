@@ -276,10 +276,13 @@ public class TweetServiceImpl implements TweetService {
 		if (user == null) {
 			throw new NotFoundException("No User Found with given credentials");
 		}
-		tweet.getUsers_likes().add(user);
-		user.getLikes().add(tweet);
-		tweetRepository.saveAndFlush(tweet);
-		userRepository.saveAndFlush(user);
+		if (!(tweet.getUsers_likes().contains(user))) { //Update likes ONLY if user has not already liked the tweet.
+			tweet.getUsers_likes().add(user);
+			user.getLikes().add(tweet);
+			tweetRepository.saveAndFlush(tweet);
+			userRepository.saveAndFlush(user);
+		}
+
 		
 	}
 
